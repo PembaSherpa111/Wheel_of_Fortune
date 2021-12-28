@@ -15,7 +15,7 @@ def word():
 def spin_the_wheel():
     wheel=['Bankrupt','Lose a Turn',900,850,800,750,700,650,600,550,500,450,400,350,300,250,200,150,150,150,100,100,100,100]
     spin_selection = random.choice(wheel)
-    print(spin_selection)
+    print(f'Spin result = {spin_selection}')
     return(spin_selection)
 
 #checking if the letter is in the word
@@ -70,9 +70,8 @@ def initial_round(player_info,random_word):
                             print(f'Your current bank amount is {player_info[list(player_info.keys())[i]]}')
                             if guessed_word == random_word:
                                 return(list(player_info.items())[i])
-                            
-                            buy_vowel = 'y'
-                            while buy_vowel == 'y':
+                            buy_vowel = 'y' #player can buy vowel if guessed correct consonant
+                            while buy_vowel == 'y': #can buy vowel until incorrect guess
                                 buy_vowel = input('Do you want to buy vowel? Enter y/n: ')
                                 while buy_vowel.lower() not in ['y','n']: # making sure input is y or n.
                                     buy_vowel = input('Do you want to buy vowel? Enter y/n: ')
@@ -98,12 +97,12 @@ player_name = []
 player_name.append(input('Enter the username of player1: '))
 player_name.append(input('Enter the username of player2: '))
 player_name.append(input('Enter the username of player3: '))
+temp_bank = [0,0,0] 
 
 #round 1
 print('Round 1 Begins')
 random.shuffle(player_name) #randomly sorting the players turn
 print(f'The randomly sorted order of turn is {player_name}')
-temp_bank = [0,0,0] 
 player_info = list (zip (player_name, temp_bank))
 random_word = word()
 r1_winner= initial_round(player_info,random_word) # gives result as a tuple {'player_name', temp_bank}
