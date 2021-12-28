@@ -2,14 +2,22 @@ import random
 import json
 
 #getting the random word from json file
+#def word():
+ #   f = open('words_dictionary.json') #json file needs to be in same folder 
+  #  string_dictionary = f.read()
+   #list_dictionary_keys = list(dictionary.keys()) #converting the collection type from dictionary to list
+   # random_word = random.choice(list_dictionary_keys)
+    #f.close()
+    #return(random_word.lower())
+
 def word():
-    f = open('words_dictionary.json') #json file needs to be in same folder 
+    f = open('phrases.json') #json file needs to be in same folder 
     string_dictionary = f.read()
     dictionary = json.loads(string_dictionary) #converting the data type from string to dictionary
-    list_dictionary_keys = list(dictionary.keys()) #converting the collection type from dictionary to list
-    random_word = random.choice(list_dictionary_keys)
+    random_index=random.randint(0,(len(dictionary)-1))
+    random_word = list(dictionary.items())[random_index]
     f.close()
-    return(random_word.lower())
+    return(random_word) #returns phrase and category
 
 #spinning the wheel
 def spin_the_wheel():
@@ -19,8 +27,8 @@ def spin_the_wheel():
     return(spin_selection)
 
 #checking if the letter is in the word
-def check_letter_existence(random_word,guessed_word,letter):
-    for i,x in enumerate(random_word): #required for cases where duplicate letters are present
+def check_letter_existence(phrase,guessed_word,letter):
+    for i,x in enumerate(phrase): #required for cases where duplicate letters are present
         if x == letter.lower():
             guessed_word = guessed_word[:i] + letter.lower() + guessed_word[i+1:]
     return(guessed_word)            
@@ -28,12 +36,19 @@ def check_letter_existence(random_word,guessed_word,letter):
 #Round 1 and Round 2 gameplay
 def initial_round(player_info,random_word):
     player_info = dict(player_info) # converting list to dictionary
-    guessed_word = ('-' * len(random_word))
+    phrase = random_word[0].lower()
+    hint = random_word[1]
+    guessed_word = ('-' * len(phrase))
+    revealed_letters = [" ","-","!","'",".","?","&"]
+    for letter in revealed_letters:
+        guessed_word = check_letter_existence(phrase,guessed_word,letter)
+
     i = 0
-    while guessed_word != random_word:
+    while guessed_word != phrase:
         for i in range(0,3):
             print('================================')
             print(guessed_word)
+            print(f'Hint: {hint}')
             print(f"\n{list(player_info.keys())[i]}'s turn")
             print(f'Your current bank amount is {player_info[list(player_info.keys())[i]]}')
             spin_again = True
@@ -45,7 +60,7 @@ def initial_round(player_info,random_word):
                 
                 if guess_the_word == 'y':
                     guess = input('Enter your guess: ')
-                    if guess.lower() == random_word:
+                    if guess.lower() == phrase:
                         return(list(player_info.items())[i])
                     else:
                         spin_again = False
@@ -60,15 +75,15 @@ def initial_round(player_info,random_word):
                         spin_again = False
                     else:
                         consonant = input('Enter a consonant: ') 
-                        index = random_word.find(consonant.lower())
+                        index = phrase.find(consonant.lower())
                         if index == -1:
                             spin_again = False
                         else:
-                            guessed_word = check_letter_existence(random_word,guessed_word,consonant)
+                            guessed_word = check_letter_existence(phrase,guessed_word,consonant)
                             player_info[list(player_info.keys())[i]] = player_info[list(player_info.keys())[i]] + spin_selection #adding the dollar value to temporary bank
                             print(guessed_word)
                             print(f'Your current bank amount is {player_info[list(player_info.keys())[i]]}')
-                            if guessed_word == random_word:
+                            if guessed_word == phrase:
                                 return(list(player_info.items())[i])
                             buy_vowel = 'y' #player can buy vowel if guessed correct consonant
                             while buy_vowel == 'y': #can buy vowel until incorrect guess
@@ -79,16 +94,16 @@ def initial_round(player_info,random_word):
                                     player_info[list(player_info.keys())[i]] = player_info[list(player_info.keys())[i]] - 250 #substracting the cost of vowel
                                     print(f'Your current bank amount is {player_info[list(player_info.keys())[i]]}')
                                     vowel = input('Enter a vowel: ')
-                                    index = random_word.find(vowel.lower())
+                                    index = phrase.find(vowel.lower())
                                     if index == -1:
                                         spin_again = False
                                         buy_vowel = 'n'
                                     else:
-                                        guessed_word = check_letter_existence(random_word,guessed_word,vowel)
+                                        guessed_word = check_letter_existence(phrase,guessed_word,vowel)
                                         player_info[list(player_info.keys())[i]] = player_info[list(player_info.keys())[i]] + spin_selection #adding the dollar value to temporary bank
                                         print(guessed_word)
                                         print(f'Your current bank amount is {player_info[list(player_info.keys())[i]]}')
-                                if guessed_word == random_word:
+                                if guessed_word == phrase:
                                     return(list(player_info.items())[i])
     
 #start of the game
@@ -135,23 +150,27 @@ else: #if different winners checking who has more in the bank
 print('\nFinal Round Begins')
 print(f'Good Luck {finalist}!\n')
 random_word = word()
-guessed_word = ('-' * len(random_word))
+phrase = random_word[0].lower()
+hint = random_word[1]
+guessed_word = ('-' * len(phrase))
+guessed_word = check_letter_existence(phrase,guessed_word,' ') #showing white spaces
+
 revealed_letters = ['r','s','t','l','n','e']
 for letter in revealed_letters:
-    guessed_word = check_letter_existence(random_word,guessed_word,letter)
+    guessed_word = check_letter_existence(phrase,guessed_word,letter)
 print(guessed_word)
 print('Enter 3 consonants and 1 vowel letter.')
 consonant = input('Enter 1st consonant: ')
-guessed_word = check_letter_existence(random_word,guessed_word,consonant)
+guessed_word = check_letter_existence(phrase,guessed_word,consonant)
 consonant = input('Enter 2nd consonant: ')
-guessed_word = check_letter_existence(random_word,guessed_word,consonant)
+guessed_word = check_letter_existence(phrase,guessed_word,consonant)
 consonant = input('Enter 3nd consonant: ')
-guessed_word = check_letter_existence(random_word,guessed_word,consonant)
+guessed_word = check_letter_existence(phrase,guessed_word,consonant)
 vowel = input('Enter 1 vowel: ')
-guessed_word = check_letter_existence(random_word,guessed_word,vowel)
+guessed_word = check_letter_existence(phrase,guessed_word,vowel)
 print(guessed_word)
 guess = input('Enter the full word: ')
-if guess.lower() == random_word:
+if guess.lower() == phrase:
     print(f'\nCongratulation! You win {final_prize_amount}')
 else:
-    print(f'\nYou lose! Correct answer is {random_word}')
+    print(f'\nYou lose! Correct answer is {phrase}')
