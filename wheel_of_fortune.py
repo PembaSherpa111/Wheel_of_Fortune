@@ -2,14 +2,6 @@ import random
 import json
 
 #getting the random word from json file
-#def word():
- #   f = open('words_dictionary.json') #json file needs to be in same folder 
-  #  string_dictionary = f.read()
-   #list_dictionary_keys = list(dictionary.keys()) #converting the collection type from dictionary to list
-   # random_word = random.choice(list_dictionary_keys)
-    #f.close()
-    #return(random_word.lower())
-
 def word():
     f = open('phrases.json') #json file needs to be in same folder 
     string_dictionary = f.read()
