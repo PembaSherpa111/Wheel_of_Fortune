@@ -28,6 +28,7 @@ def check_letter_existence(phrase,guessed_word,letter):
 #Round 1 and Round 2 gameplay
 def initial_round(player_info,random_word):
     player_info = dict(player_info) # converting list to dictionary
+    vowel_list=['a','e','i','o','u']
     phrase = random_word[0].lower()
     hint = random_word[1]
     guessed_word = ('-' * len(phrase))
@@ -66,7 +67,11 @@ def initial_round(player_info,random_word):
                         print(f'Your current bank amount is {player_info[list(player_info.keys())[i]]}')
                         spin_again = False
                     else:
-                        consonant = input('Enter a consonant: ') 
+                        consonant = input('Enter a consonant: ')
+                        if consonant in vowel_list:
+                            print(f'{consonant} is not a consonant.')
+                            spin_again = False
+                            break 
                         index = phrase.find(consonant.lower())
                         if index == -1:
                             spin_again = False
@@ -86,6 +91,10 @@ def initial_round(player_info,random_word):
                                     player_info[list(player_info.keys())[i]] = player_info[list(player_info.keys())[i]] - 250 #substracting the cost of vowel
                                     print(f'Your current bank amount is {player_info[list(player_info.keys())[i]]}')
                                     vowel = input('Enter a vowel: ')
+                                    if vowel not in vowel_list:
+                                        print(f'{vowel} is not a vowel.')
+                                        spin_again = False
+                                        break
                                     index = phrase.find(vowel.lower())
                                     if index == -1:
                                         spin_again = False
